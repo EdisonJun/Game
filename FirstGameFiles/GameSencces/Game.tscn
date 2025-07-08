@@ -1,0 +1,114 @@
+[gd_scene load_steps=9 format=3 uid="uid://byavkwwxofkwx"]
+
+[ext_resource type="Script" uid="uid://d0gyx7f2i0ihn" path="res://Scripts/GameManager.gd" id="1_56ax7"]
+[ext_resource type="Texture2D" uid="uid://8vukrllmvqq4" path="res://AssetBundle/Sprites/ForestBackground.png" id="1_vbq0e"]
+[ext_resource type="PackedScene" uid="uid://1xbfbiyhs55v" path="res://GameSencces/player.tscn" id="2_cbyur"]
+[ext_resource type="PackedScene" uid="uid://cy36h1mq0ifwj" path="res://GameSencces/Monster.tscn" id="3_pfs5p"]
+[ext_resource type="FontFile" uid="uid://digd1nftrdhqj" path="res://AssetBundle/Uranus_Pixel_11Px.ttf" id="5_ymrpf"]
+[ext_resource type="AudioStream" uid="uid://desscy0fqkf7q" path="res://AssetBundle/Audio/BGM.ogg" id="6_3ciqe"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_cbyur"]
+distance = -357.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_pfs5p"]
+
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("spawn_timer", "score_label", "show_game_over_label")]
+y_sort_enabled = true
+script = ExtResource("1_56ax7")
+slime_scene = ExtResource("3_pfs5p")
+spawn_timer = NodePath("Timer")
+score_label = NodePath("CanvasLayer/Label")
+show_game_over_label = NodePath("CanvasLayer/Game Over Label")
+
+[node name="background2" type="Sprite2D" parent="."]
+position = Vector2(-332, -1.00003)
+scale = Vector2(2.76667, 2.68571)
+texture = ExtResource("1_vbq0e")
+metadata/_edit_lock_ = true
+
+[node name="background1" type="Sprite2D" parent="."]
+position = Vector2(332.5, 1.90735e-05)
+scale = Vector2(2.77083, 2.67857)
+texture = ExtResource("1_vbq0e")
+metadata/_edit_lock_ = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.865, 0.865)
+metadata/_edit_lock_ = true
+
+[node name="Slime" parent="." instance=ExtResource("3_pfs5p")]
+position = Vector2(690, 282)
+
+[node name="Player" parent="." instance=ExtResource("2_cbyur")]
+position = Vector2(-282, 255)
+
+[node name="Border" type="Node2D" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Border"]
+position = Vector2(8, 14)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Border/StaticBody2D"]
+position = Vector2(-3, 7)
+shape = SubResource("WorldBoundaryShape2D_cbyur")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Border"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Border/StaticBody2D2"]
+position = Vector2(0, 476)
+rotation = 3.14159
+shape = SubResource("WorldBoundaryShape2D_cbyur")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Border"]
+position = Vector2(-654, 239)
+rotation = 1.57079
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Border/StaticBody2D3"]
+shape = SubResource("WorldBoundaryShape2D_pfs5p")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="Border"]
+position = Vector2(631, 235)
+rotation = -1.57079
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Border/StaticBody2D4"]
+shape = SubResource("WorldBoundaryShape2D_pfs5p")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_left = 33.0
+offset_top = 35.0
+offset_right = 187.0
+offset_bottom = 84.0
+theme_override_fonts/font = ExtResource("5_ymrpf")
+theme_override_font_sizes/font_size = 48
+text = "Score: 0"
+
+[node name="Game Over Label" type="Label" parent="CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -119.5
+offset_top = -24.5
+offset_right = 119.5
+offset_bottom = 24.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0.543919, 0.00499795, 0.27947, 1)
+theme_override_constants/outline_size = 50
+theme_override_fonts/font = ExtResource("5_ymrpf")
+theme_override_font_sizes/font_size = 120
+text = "Game Over !"
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_3ciqe")
+volume_db = -27.313
+autoplay = true
+
+[connection signal="timeout" from="Timer" to="." method="_spawn_slime"]
